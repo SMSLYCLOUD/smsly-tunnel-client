@@ -93,17 +93,18 @@ export class TunnelClient {
         return new Promise((resolve) => {
             const startTime = Date.now();
 
+            const headers: Record<string, string | undefined> = { ...data.headers };
+            // Remove host header
+            delete headers['host'];
+            delete headers['Host'];
+
             const options: http.RequestOptions = {
                 hostname: 'localhost',
                 port: this.options.localPort,
                 path: data.path,
                 method: data.method,
-                headers: { ...data.headers },
+                headers,
             };
-
-            // Remove host header
-            delete options.headers!['host'];
-            delete options.headers!['Host'];
 
             const req = http.request(options, (res) => {
                 const chunks: Buffer[] = [];
